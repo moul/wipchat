@@ -17,8 +17,44 @@
 ## Usage
 
 ```console
-$ wipchat -h
-...
+$ export WIPCHAT_KEY=XXX
+$ wipchat  | jq . | head -11
+{
+  "Viewer": {
+    "ID": "1780",
+    "URL": "https://wip.chat/@moul",
+    "Username": "moul",
+    "Firstname": "Manfred",
+    "Lastname": "Touron 🇫🇷",
+    "AvatarURL": "https://wip.imgix.net/cache/user/1780/avatar/acb8193abf5d107a8d644da41b071494.png?ixlib=rb-3.2.1&w=64&h=64&fit=crop&s=1b2e60b141240f8b3f975a2dc42f5cb5",
+    "CompletedTodosCount": 128,
+    "BestStreak": 16,
+    "Streaking": true,
+$ wipchat  | jq '.Viewer.Todos[].Body'
+"🟨 join WIP #life"
+"🟨 add #berty on WIP"
+"🟨 add #oss on WIP"
+"♻️ find or make an integration to have my todos on WIP without leaving trello #life"
+"🐛 fix an AMP bug in a hugo-template, that I missed for multiple weeks on my personal website #life"
+$ wipchat  | jq '.Viewer.Products[].Name'
+"Missions"
+"protoc-gen-gotemplate"
+"Alfred TOTP"
+"Scaleway"
+"gRPCb.in"
+"FranceP2P / Paris P2P"
+"Ultreme"
+"Wulo"
+"WIP Tools"
+"Berty"
+"Manfred's Life"
+"Open-source stuff"
+"Millipede"
+"multiarch"
+"Pathwar"
+"depviz"
+"sshportal"
+"assh"
 ```
 
 ## Install
@@ -29,15 +65,9 @@ $ wipchat -h
 $ go get -u moul.io/wipchat
 ```
 
-### Using brew
+### Releases
 
-```console
-$ brew install moul/moul/wipchat
-```
-
-### Download releases
-
-https://github.com/moul/wipchat/releases
+See https://github.com/moul/wipchat/releases
 
 ## License
 
