@@ -76,14 +76,14 @@ type ViewerQuery struct {
 	}
 }
 
-func (c Client) CreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []io.Reader) (*CreateTodoMutation, error) {
+func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []io.Reader) (*CreateTodoMutation, error) {
 	if len(attachments) > 0 {
 		return nil, fmt.Errorf("attachments are not implemented yet")
 	}
 	var mutation CreateTodoMutation
 	variables := map[string]interface{}{
-		"input": createTodoInput{
-			Body:        body,
+		"input": TodoInput{
+			Body:        graphql.String(body),
 			CompletedAt: completedAt,
 			// Attachments:
 		},
@@ -95,18 +95,18 @@ func (c Client) CreateTodo(ctx context.Context, body string, completedAt *time.T
 	return &mutation, nil
 }
 
-type createTodoInput struct {
-	Body        string
-	CompletedAt *time.Time `graphql:"completed_at"`
+type TodoInput struct {
+	Body        graphql.String `json:"body"`
+	CompletedAt *time.Time     `json:"completed_at"`
 	// Attachments:
 }
 
 type CreateTodoMutation struct {
 	CreateTodo struct {
 		ID          graphql.ID
-		CreatedAt   time.Time `graphql:"created_at"`
-		CompletedAt time.Time `graphql:"completed_at"`
-		UpdatedAt   time.Time `graphql:"updated_at"`
+		CreatedAt   time.Time  `graphql:"created_at"`
+		CompletedAt *time.Time `graphql:"completed_at" json:"CompletedAt,omitempty"`
+		UpdatedAt   time.Time  `graphql:"updated_at"`
 		Body        string
 		Product     struct { // type=Product
 			ID      graphql.ID

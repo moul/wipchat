@@ -21,6 +21,44 @@ $ export WIPCHAT_KEY=XXX
 ```
 
 ```console
+$ wipchat todo 👋 hello world
+{
+  "CreateTodo": {
+    "ID": "150865",
+    "CreatedAt": "2020-05-24T23:43:14Z",
+    "UpdatedAt": "2020-05-24T23:43:14Z",
+    "Body": "👋 hello world",
+    "User": {
+      "ID": "1780",
+      "URL": "https://wip.chat/@moul"
+    }
+  }
+}
+```
+
+```console
+$ wipchat done "👋 hello world #oss"wipchat
+{
+  "CreateTodo": {
+    "ID": "150866",
+    "CreatedAt": "2020-05-24T23:44:15Z",
+    "CompletedAt": "2020-05-24T23:44:15Z",
+    "UpdatedAt": "2020-05-24T23:44:15Z",
+    "Body": "👋 hello world #oss",
+    "Product": {
+      "ID": "3493",
+      "Hashtag": "oss",
+      "URL": "https://wip.chat/products/oss"
+    },
+    "User": {
+      "ID": "1780",
+      "URL": "https://wip.chat/@moul"
+    }
+  }
+}
+```
+
+```console
 $ wipchat me  | jq . | head -11
 {
   "Viewer": {
