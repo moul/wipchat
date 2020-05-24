@@ -18,7 +18,10 @@
 
 ```console
 $ export WIPCHAT_KEY=XXX
-$ wipchat  | jq . | head -11
+```
+
+```console
+$ wipchat me  | jq . | head -11
 {
   "Viewer": {
     "ID": "1780",
@@ -30,13 +33,19 @@ $ wipchat  | jq . | head -11
     "CompletedTodosCount": 128,
     "BestStreak": 16,
     "Streaking": true,
-$ wipchat  | jq '.Viewer.Todos[].Body'
+```
+
+```console
+$ wipchat me | jq '.Viewer.Todos[].Body'
 "🟨 join WIP #life"
 "🟨 add #berty on WIP"
 "🟨 add #oss on WIP"
 "♻️ find or make an integration to have my todos on WIP without leaving trello #life"
 "🐛 fix an AMP bug in a hugo-template, that I missed for multiple weeks on my personal website #life"
-$ wipchat  | jq '.Viewer.Products[].Name'
+```
+
+```console
+$ wipchat me | jq '.Viewer.Products[].Name'
 "Missions"
 "protoc-gen-gotemplate"
 "Alfred TOTP"

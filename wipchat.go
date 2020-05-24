@@ -2,6 +2,8 @@ package wipchat
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -72,4 +74,48 @@ type ViewerQuery struct {
 			// Todos   []Todo
 		}
 	}
+}
+
+func (c Client) CreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []io.Reader) (*CreateTodoMutation, error) {
+	if len(attachments) > 0 {
+		return nil, fmt.Errorf("attachments are not implemented yet")
+	}
+	var mutation CreateTodoMutation
+	variables := map[string]interface{}{
+		"input": createTodoInput{
+			Body:        body,
+			CompletedAt: completedAt,
+			// Attachments:
+		},
+	}
+	err := c.graphql.Mutate(ctx, &mutation, variables)
+	if err != nil {
+		return nil, err
+	}
+	return &mutation, nil
+}
+
+type createTodoInput struct {
+	Body        string
+	CompletedAt *time.Time `graphql:"completed_at"`
+	// Attachments:
+}
+
+type CreateTodoMutation struct {
+	CreateTodo struct {
+		ID          graphql.ID
+		CreatedAt   time.Time `graphql:"created_at"`
+		CompletedAt time.Time `graphql:"completed_at"`
+		UpdatedAt   time.Time `graphql:"updated_at"`
+		Body        string
+		Product     struct { // type=Product
+			ID      graphql.ID
+			Hashtag string
+			URL     string
+		}
+		User struct { // type=User
+			ID  graphql.ID
+			URL string
+		}
+	} `graphql:"createTodo(input: $input)"`
 }
