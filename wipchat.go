@@ -1,14 +1,17 @@
 package wipchat
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"io"
+	"mime/multipart"
 	"net/http"
 	"time"
 
 	"github.com/shurcooL/graphql"
 	"moul.io/roundtripper"
+	"moul.io/wipchat/wiptypes"
 )
 
 type Client struct {
@@ -25,8 +28,8 @@ func New(apikey string) Client {
 	return Client{graphql: gqlClient}
 }
 
-func (c Client) QueryViewer(ctx context.Context) (*ViewerQuery, error) {
-	var query ViewerQuery
+func (c Client) QueryViewer(ctx context.Context) (*wiptypes.ViewerQuery, error) {
+	var query wiptypes.ViewerQuery
 	err := c.graphql.Query(ctx, &query, nil)
 	if err != nil {
 		return nil, err
@@ -34,54 +37,72 @@ func (c Client) QueryViewer(ctx context.Context) (*ViewerQuery, error) {
 	return &query, nil
 }
 
-type ViewerQuery struct {
-	Viewer struct { // type=User
-		ID                  graphql.ID
-		URL                 string
-		Username            string
-		Firstname           string `graphql:"first_name"`
-		Lastname            string `graphql:"last_name"`
-		AvatarURL           string `graphql:"avatar_url"`
-		CompletedTodosCount int    `graphql:"completed_todos_count"`
-		BestStreak          int    `graphql:"best_streak"`
-		Streaking           bool
-		Todos               []struct { // type=Todo
-			ID          graphql.ID
-			CreatedAt   time.Time `graphql:"created_at"`
-			CompletedAt time.Time `graphql:"completed_at"`
-			UpdatedAt   time.Time `graphql:"updated_at"`
-			Body        string
-			Product     *struct { // type=Product
-				ID      graphql.ID
-				Hashtag string
-				URL     string
+func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []Attachment) (*wiptypes.CreateTodoMutation, error) {
+	attachmentsInput := make([]wiptypes.AttachmentInput, len(attachments))
+	for i, attachment := range attachments {
+		var mutation wiptypes.CreatePresignedURLMutation
+		variables := map[string]interface{}{
+			"filename": graphql.String(attachment.Filename),
+		}
+		err := c.graphql.Mutate(ctx, &mutation, variables)
+		if err != nil {
+			return nil, err
+		}
+		if mutation.CreatePresignedURL.Headers != "{}" ||
+			mutation.CreatePresignedURL.Method != "post" {
+			return nil, fmt.Errorf("unsupported attachment API")
+		}
+		var fields map[string]string
+		err = json.Unmarshal([]byte(mutation.CreatePresignedURL.Fields), &fields)
+		if err != nil {
+			return nil, err
+		}
+		var b bytes.Buffer
+		w := multipart.NewWriter(&b)
+		for key, value := range fields {
+			fw, err := w.CreateFormField(key)
+			if err != nil {
+				return nil, err
 			}
-		} `graphql:"todos(limit:5)"`
-		Products []struct { // type=Product
-			ID         graphql.ID
-			CreatedAt  time.Time `graphql:"created_at"`
-			Hashtag    string
-			Name       string
-			Pitch      string
-			UpdatedAt  time.Time `graphql:"updated_at"`
-			URL        string
-			WebsiteURL string `graphql:"website_url"`
-			// Makers  []User
-			// Todos   []Todo
+			_, err = fw.Write([]byte(value))
+			if err != nil {
+				return nil, err
+			}
+		}
+		fw, err := w.CreateFormFile("file", attachment.Filename)
+		if err != nil {
+			return nil, err
+		}
+		_, err = fw.Write(attachment.Bytes)
+		if err != nil {
+			return nil, err
+		}
+		w.Close()
+		req, err := http.NewRequest("POST", mutation.CreatePresignedURL.URL, &b)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set("Content-Type", w.FormDataContentType())
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer res.Body.Close()
+		if res.StatusCode != 204 {
+			return nil, fmt.Errorf("invalid status code: %d", res.StatusCode)
+		}
+		attachmentsInput[i] = wiptypes.AttachmentInput{
+			Key:      fields["key"],
+			Filename: attachment.Filename,
+			Size:     len(attachment.Bytes),
 		}
 	}
-}
-
-func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []io.Reader) (*CreateTodoMutation, error) {
-	if len(attachments) > 0 {
-		return nil, fmt.Errorf("attachments are not implemented yet")
-	}
-	var mutation CreateTodoMutation
+	var mutation wiptypes.CreateTodoMutation
 	variables := map[string]interface{}{
-		"input": TodoInput{
+		"input": wiptypes.TodoInput{
 			Body:        graphql.String(body),
 			CompletedAt: completedAt,
-			// Attachments:
+			Attachments: attachmentsInput,
 		},
 	}
 	err := c.graphql.Mutate(ctx, &mutation, variables)
@@ -91,27 +112,7 @@ func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *
 	return &mutation, nil
 }
 
-type TodoInput struct {
-	Body        graphql.String `json:"body"`
-	CompletedAt *time.Time     `json:"completed_at"`
-	// Attachments:
-}
-
-type CreateTodoMutation struct {
-	CreateTodo struct {
-		ID          graphql.ID
-		CreatedAt   time.Time  `graphql:"created_at"`
-		CompletedAt *time.Time `graphql:"completed_at" json:"CompletedAt,omitempty"`
-		UpdatedAt   time.Time  `graphql:"updated_at"`
-		Body        string
-		Product     *struct { // type=Product
-			ID      graphql.ID
-			Hashtag string
-			URL     string
-		}
-		User struct { // type=User
-			ID  graphql.ID
-			URL string
-		}
-	} `graphql:"createTodo(input: $input)"`
+type Attachment struct {
+	Filename string
+	Bytes    []byte
 }
