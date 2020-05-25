@@ -51,14 +51,10 @@ type ViewerQuery struct {
 			CompletedAt time.Time `graphql:"completed_at"`
 			UpdatedAt   time.Time `graphql:"updated_at"`
 			Body        string
-			Product     struct { // type=Product
+			Product     *struct { // type=Product
 				ID      graphql.ID
 				Hashtag string
 				URL     string
-			}
-			User struct { // type=User
-				ID  graphql.ID
-				URL string
 			}
 		} `graphql:"todos(limit:5)"`
 		Products []struct { // type=Product
@@ -108,7 +104,7 @@ type CreateTodoMutation struct {
 		CompletedAt *time.Time `graphql:"completed_at" json:"CompletedAt,omitempty"`
 		UpdatedAt   time.Time  `graphql:"updated_at"`
 		Body        string
-		Product     struct { // type=Product
+		Product     *struct { // type=Product
 			ID      graphql.ID
 			Hashtag string
 			URL     string

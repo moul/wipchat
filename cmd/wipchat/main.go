@@ -59,6 +59,7 @@ func run(_ []string) error {
 						return err
 					}
 					fmt.Println(godev.PrettyJSON(todo))
+					fmt.Printf("%s/todos/%s\n", todo.CreateTodo.User.URL, todo.CreateTodo.ID)
 					return nil
 				},
 			}, {
@@ -77,6 +78,7 @@ func run(_ []string) error {
 						return err
 					}
 					fmt.Println(godev.PrettyJSON(todo))
+					fmt.Printf("%s/todos/%s\n", todo.CreateTodo.User.URL, todo.CreateTodo.ID)
 					return nil
 				},
 			},
