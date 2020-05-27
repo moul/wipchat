@@ -25,7 +25,7 @@ func main() {
 	}
 }
 
-func run(_ []string) error {
+func run(args []string) error {
 	var (
 		attachPaths stringSlice
 		apiKey      string
@@ -107,7 +107,7 @@ func run(_ []string) error {
 		},
 	}
 
-	return root.ParseAndRun(context.Background(), os.Args[1:])
+	return root.ParseAndRun(context.Background(), args[1:])
 }
 
 func loadAttachPaths(paths []string) ([]wipchat.Attachment, error) {
