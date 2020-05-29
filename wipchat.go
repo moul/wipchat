@@ -16,19 +16,25 @@ import (
 
 type Client struct {
 	graphql *graphql.Client
+	hasKey  bool
 }
 
 func New(apikey string) Client {
 	transport := roundtripper.Transport{}
+	client := Client{}
 	if apikey != "" {
 		transport.ExtraHeader = http.Header{"Authorization": []string{"Bearer " + apikey}}
+		client.hasKey = true
 	}
 	httpClient := http.Client{Transport: &transport}
-	gqlClient := graphql.NewClient("https://wip.chat/graphql", &httpClient)
-	return Client{graphql: gqlClient}
+	client.graphql = graphql.NewClient("https://wip.chat/graphql", &httpClient)
+	return client
 }
 
 func (c Client) QueryViewer(ctx context.Context) (*wiptypes.ViewerQuery, error) {
+	if !c.hasKey {
+		return nil, ErrTokenRequired
+	}
 	var query wiptypes.ViewerQuery
 	err := c.graphql.Query(ctx, &query, nil)
 	if err != nil {
@@ -38,6 +44,9 @@ func (c Client) QueryViewer(ctx context.Context) (*wiptypes.ViewerQuery, error) 
 }
 
 func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *time.Time, attachments []Attachment) (*wiptypes.CreateTodoMutation, error) {
+	if !c.hasKey {
+		return nil, ErrTokenRequired
+	}
 	attachmentsInput := make([]wiptypes.AttachmentInput, len(attachments))
 	for i, attachment := range attachments {
 		var mutation wiptypes.CreatePresignedURLMutation
