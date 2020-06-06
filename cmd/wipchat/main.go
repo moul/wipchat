@@ -15,6 +15,7 @@ import (
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
+	"moul.io/motd"
 	"moul.io/wipchat"
 )
 
@@ -103,6 +104,7 @@ func run(_ []string) error {
 			},
 		},
 		Exec: func(_ context.Context, _ []string) error {
+			fmt.Fprintln(os.Stderr, motd.Default())
 			return flag.ErrHelp
 		},
 	}
