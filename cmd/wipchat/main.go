@@ -30,9 +30,11 @@ func run(_ []string) error {
 	var (
 		attachPaths stringSlice
 		apiKey      string
+		debug       bool
 	)
 	rootFlags := flag.NewFlagSet("root", flag.ExitOnError)
 	rootFlags.StringVar(&apiKey, "key", "", "Your private API key from https://wip.chat/api")
+	rootFlags.BoolVar(&debug, "debug", false, "More verbose output")
 	todoFlags := flag.NewFlagSet("todo", flag.ExitOnError)
 	todoFlags.Var(&attachPaths, "attach", "attachment paths or URLs")
 
@@ -69,12 +71,15 @@ func run(_ []string) error {
 						return err
 					}
 					client := wipchat.New(apiKey)
-					todo, err := client.MutateCreateTodo(ctx, body, nil, attachments)
+					task, err := client.MutateCreateTodo(ctx, body, nil, attachments)
 					if err != nil {
 						return err
 					}
-					fmt.Println(godev.PrettyJSON(todo))
-					fmt.Printf("%s/todos/%s\n", todo.CreateTodo.User.URL, todo.CreateTodo.ID)
+
+					if debug {
+						fmt.Fprintln(os.Stderr, godev.PrettyJSON(task))
+					}
+					fmt.Printf("%s/todos/%s\n", task.CreateTodo.User.URL, task.CreateTodo.ID)
 					return nil
 				},
 			}, {
@@ -93,12 +98,15 @@ func run(_ []string) error {
 					}
 					client := wipchat.New(apiKey)
 					now := time.Now()
-					todo, err := client.MutateCreateTodo(ctx, body, &now, attachments)
+					task, err := client.MutateCreateTodo(ctx, body, &now, attachments)
 					if err != nil {
 						return err
 					}
-					fmt.Println(godev.PrettyJSON(todo))
-					fmt.Printf("%s/todos/%s\n", todo.CreateTodo.User.URL, todo.CreateTodo.ID)
+
+					if debug {
+						fmt.Fprintln(os.Stderr, godev.PrettyJSON(task))
+					}
+					fmt.Printf("%s/todos/%s\n", task.CreateTodo.User.URL, task.CreateTodo.ID)
 					return nil
 				},
 			},
