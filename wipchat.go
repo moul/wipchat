@@ -31,7 +31,7 @@ func New(apikey string) Client {
 	return client
 }
 
-func (c Client) QueryViewer(ctx context.Context) (*wiptypes.ViewerQuery, error) {
+func (c Client) QueryViewer(ctx context.Context) (*wiptypes.User, error) {
 	if !c.hasKey {
 		return nil, ErrTokenRequired
 	}
@@ -40,7 +40,25 @@ func (c Client) QueryViewer(ctx context.Context) (*wiptypes.ViewerQuery, error) 
 	if err != nil {
 		return nil, err
 	}
-	return &query, nil
+
+	var ret wiptypes.User
+	err = typeToType(&query.Viewer, &ret)
+	return &ret, err
+}
+
+func (c Client) QueryTodos(ctx context.Context) ([]wiptypes.Todo, error) {
+	if !c.hasKey {
+		return nil, ErrTokenRequired
+	}
+	var query wiptypes.TodosQuery
+	err := c.graphql.Query(ctx, &query, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret []wiptypes.Todo
+	err = typeToType(&query.Todos, &ret)
+	return ret, err
 }
 
 func (c Client) uploadAttachment(ctx context.Context, attachment Attachment) (*wiptypes.AttachmentInput, error) {
@@ -135,4 +153,12 @@ func (c Client) MutateCreateTodo(ctx context.Context, body string, completedAt *
 type Attachment struct {
 	Filename string
 	Bytes    []byte
+}
+
+func typeToType(in, out interface{}) error {
+	buf, err := json.Marshal(in)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(buf, out)
 }

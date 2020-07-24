@@ -109,6 +109,18 @@ func run(_ []string) error {
 					fmt.Printf("%s/todos/%s\n", task.CreateTodo.User.URL, task.CreateTodo.ID)
 					return nil
 				},
+			}, {
+				Name:      "todos",
+				ShortHelp: "todos posted by makers",
+				Exec: func(ctx context.Context, _ []string) error {
+					client := wipchat.New(apiKey)
+					todos, err := client.QueryTodos(ctx)
+					if err != nil {
+						return err
+					}
+					fmt.Println(godev.PrettyJSON(todos))
+					return nil
+				},
 			},
 		},
 		Exec: func(_ context.Context, _ []string) error {

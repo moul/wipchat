@@ -44,6 +44,51 @@ type ViewerQuery struct {
 	}
 }
 
+type TodosQuery struct {
+	Todos []struct {
+		ID      graphql.ID
+		Product struct {
+			ID         graphql.ID
+			CreatedAt  time.Time `graphql:"created_at"`
+			Hashtag    string
+			Name       string
+			Pitch      string
+			UpdatedAt  time.Time `graphql:"updated_at"`
+			URL        string
+			WebsiteURL string `graphql:"website_url"`
+			// Makers  []User
+			// Todos   []Todo
+		}
+		UpdatedAt time.Time `graphql:"updated_at"`
+		User      struct {
+			ID                  graphql.ID
+			URL                 string
+			Username            string
+			Firstname           string `graphql:"first_name"`
+			Lastname            string `graphql:"last_name"`
+			AvatarURL           string `graphql:"avatar_url"`
+			CompletedTodosCount int    `graphql:"completed_todos_count"`
+			BestStreak          int    `graphql:"best_streak"`
+			Streaking           bool
+			//Products []Product
+			//Todos []Todo
+		}
+		CreatedAt   time.Time `graphql:"created_at"`
+		CompletedAt time.Time `graphql:"completed_at"`
+		Body        string
+		Attachments []struct {
+			ID        graphql.ID
+			CreatedAt time.Time `graphql:"created_at"`
+			Filename  string
+			MimeType  string `graphql:"mime_type"`
+			Size      int
+			UpdatedAt time.Time `graphql:"updated_at"`
+			URL       string
+			//AspectRatio float64   `graphql:"aspect_ratio"` // buggy
+		}
+	}
+}
+
 type CreatePresignedURLMutation struct {
 	CreatePresignedURL struct {
 		Fields  graphql.String
@@ -83,15 +128,4 @@ type CreateTodoMutation struct {
 		}
 		Attachments []Attachment
 	} `graphql:"createTodo(input: $input)"`
-}
-
-type Attachment struct {
-	ID          graphql.ID `graphql:"id"`
-	AspectRatio float64    `graphql:"aspect_ratio"`
-	CreatedAt   time.Time  `graphql:"created_at"`
-	Filename    string     `graphql:"filename"`
-	MimeType    string     `graphql:"mime_type"`
-	Size        int        `graphql:"size"`
-	UpdatedAt   time.Time  `graphql:"updated_at"`
-	URL         string     `graphql:"url"`
 }
