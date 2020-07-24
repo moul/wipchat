@@ -61,6 +61,21 @@ func (c Client) QueryTodos(ctx context.Context) ([]wiptypes.Todo, error) {
 	return ret, err
 }
 
+func (c Client) QueryProducts(ctx context.Context) ([]wiptypes.Product, error) {
+	if !c.hasKey {
+		return nil, ErrTokenRequired
+	}
+	var query wiptypes.ProductsQuery
+	err := c.graphql.Query(ctx, &query, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret []wiptypes.Product
+	err = typeToType(&query.Products, &ret)
+	return ret, err
+}
+
 func (c Client) uploadAttachment(ctx context.Context, attachment Attachment) (*wiptypes.AttachmentInput, error) {
 	if !c.hasKey {
 		return nil, ErrTokenRequired

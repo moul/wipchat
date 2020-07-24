@@ -121,6 +121,18 @@ func run(_ []string) error {
 					fmt.Println(godev.PrettyJSON(todos))
 					return nil
 				},
+			}, {
+				Name:      "products",
+				ShortHelp: "products people are making",
+				Exec: func(ctx context.Context, _ []string) error {
+					client := wipchat.New(apiKey)
+					products, err := client.QueryProducts(ctx)
+					if err != nil {
+						return err
+					}
+					fmt.Println(godev.PrettyJSON(products))
+					return nil
+				},
 			},
 		},
 		Exec: func(_ context.Context, _ []string) error {
