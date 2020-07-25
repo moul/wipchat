@@ -14,9 +14,11 @@ import (
 
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
+	"github.com/shurcooL/graphql"
 	"moul.io/godev"
 	"moul.io/motd"
 	"moul.io/wipchat"
+	"moul.io/wipchat/wiptypes"
 )
 
 func main() {
@@ -28,15 +30,26 @@ func main() {
 
 func run(_ []string) error {
 	var (
-		attachPaths stringSlice
-		apiKey      string
-		debug       bool
+		attachPaths          stringSlice
+		apiKey               string
+		debug                bool
+		todosCompletedFilter bool
+		todosLimitFilter     int
+		todosOffsetFilter    int
+		todosFilterFilter    string
+		todosOrderFilter     string
 	)
 	rootFlags := flag.NewFlagSet("root", flag.ExitOnError)
 	rootFlags.StringVar(&apiKey, "key", "", "Your private API key from https://wip.chat/api")
 	rootFlags.BoolVar(&debug, "debug", false, "More verbose output")
 	todoFlags := flag.NewFlagSet("todo", flag.ExitOnError)
 	todoFlags.Var(&attachPaths, "attach", "attachment paths or URLs")
+	meFlags := flag.NewFlagSet("me", flag.ExitOnError)
+	meFlags.BoolVar(&todosCompletedFilter, "todos-completed", true, "todos completed filter")
+	meFlags.IntVar(&todosLimitFilter, "todos-limit", 20, "todos limit filter")
+	meFlags.IntVar(&todosOffsetFilter, "todos-offset", 0, "todos offset filter")
+	meFlags.StringVar(&todosFilterFilter, "todos-filter", "", "todos filter filter")
+	meFlags.StringVar(&todosOrderFilter, "todos-order", "", "todos order filter")
 
 	root := &ffcli.Command{
 		Name:       "wipchat",
@@ -47,9 +60,16 @@ func run(_ []string) error {
 			{
 				Name:      "me",
 				ShortHelp: "retrieve user info about current token",
+				FlagSet:   meFlags,
 				Exec: func(ctx context.Context, _ []string) error {
 					client := wipchat.New(apiKey)
-					viewer, err := client.QueryViewer(ctx)
+					viewer, err := client.QueryViewer(ctx, &wiptypes.QueryViewerOptions{
+						TodosCompleted: graphql.Boolean(todosCompletedFilter),
+						TodosLimit:     graphql.Int(todosLimitFilter),
+						TodosOffset:    graphql.Int(todosOffsetFilter),
+						TodosFilter:    graphql.String(todosFilterFilter),
+						TodosOrder:     graphql.String(todosOrderFilter),
+					})
 					if err != nil {
 						return err
 					}

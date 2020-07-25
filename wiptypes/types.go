@@ -6,6 +6,28 @@ import (
 	"github.com/shurcooL/graphql"
 )
 
+type QueryViewerOptions struct {
+	TodosCompleted graphql.Boolean
+	TodosLimit     graphql.Int
+	TodosOffset    graphql.Int
+	TodosFilter    graphql.String
+	TodosOrder     graphql.String
+}
+
+func (opts *QueryViewerOptions) ToMap() map[string]interface{} {
+	if opts.TodosLimit == 0 {
+		opts.TodosLimit = 20
+	}
+	variables := map[string]interface{}{
+		"todosCompleted": opts.TodosCompleted,
+		"todosLimit":     opts.TodosLimit,
+		"todosOffset":    opts.TodosOffset,
+		"todosFilter":    opts.TodosFilter,
+		"todosOrder":     opts.TodosOrder,
+	}
+	return variables
+}
+
 type ViewerQuery struct {
 	Viewer struct { // type=User
 		ID                  graphql.ID
@@ -28,7 +50,7 @@ type ViewerQuery struct {
 				Hashtag string
 				URL     string
 			}
-		} `graphql:"todos(limit:5)"`
+		} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, offset: $todosOffset, filter: $todosFilter, order: $todosOrder)"`
 		Products []struct { // type=Product
 			ID         graphql.ID
 			CreatedAt  time.Time `graphql:"created_at"`

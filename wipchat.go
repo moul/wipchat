@@ -31,12 +31,16 @@ func New(apikey string) Client {
 	return client
 }
 
-func (c Client) QueryViewer(ctx context.Context) (*wiptypes.User, error) {
+func (c Client) QueryViewer(ctx context.Context, opts *wiptypes.QueryViewerOptions) (*wiptypes.User, error) {
 	if !c.hasKey {
 		return nil, ErrTokenRequired
 	}
+
+	if opts == nil {
+		opts = &wiptypes.QueryViewerOptions{}
+	}
 	var query wiptypes.ViewerQuery
-	err := c.graphql.Query(ctx, &query, nil)
+	err := c.graphql.Query(ctx, &query, opts.ToMap())
 	if err != nil {
 		return nil, err
 	}
