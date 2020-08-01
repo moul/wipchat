@@ -37,6 +37,7 @@ func run(_ []string) error {
 		todosOffsetFilter    int
 		todosFilterFilter    string
 		todosOrderFilter     string
+		avatarSize           int
 	)
 	rootFlags := flag.NewFlagSet("root", flag.ExitOnError)
 	rootFlags.StringVar(&apiKey, "key", "", "Your private API key from https://wip.chat/api")
@@ -49,6 +50,7 @@ func run(_ []string) error {
 	meFlags.IntVar(&todosOffsetFilter, "todos-offset", 0, "todos offset filter")
 	meFlags.StringVar(&todosFilterFilter, "todos-filter", "", "todos filter filter")
 	meFlags.StringVar(&todosOrderFilter, "todos-order", "", "todos order filter")
+	meFlags.IntVar(&avatarSize, "avatar-size", 64, "avatar size")
 
 	root := &ffcli.Command{
 		Name:       "wipchat",
@@ -68,6 +70,7 @@ func run(_ []string) error {
 						TodosOffset:    graphql.Int(todosOffsetFilter),
 						TodosFilter:    graphql.String(todosFilterFilter),
 						TodosOrder:     graphql.String(todosOrderFilter),
+						AvatarSize:     graphql.Int(avatarSize),
 					})
 					if err != nil {
 						return err

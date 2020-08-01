@@ -32,11 +32,15 @@ type QueryViewerOptions struct {
 	TodosOffset    graphql.Int
 	TodosFilter    graphql.String
 	TodosOrder     graphql.String
+	AvatarSize     graphql.Int
 }
 
 func (opts *QueryViewerOptions) toMap() map[string]interface{} {
 	if opts.TodosLimit == 0 {
 		opts.TodosLimit = 20
+	}
+	if opts.AvatarSize == 0 {
+		opts.AvatarSize = 64
 	}
 	variables := map[string]interface{}{
 		"todosCompleted": opts.TodosCompleted,
@@ -44,6 +48,7 @@ func (opts *QueryViewerOptions) toMap() map[string]interface{} {
 		"todosOffset":    opts.TodosOffset,
 		"todosFilter":    opts.TodosFilter,
 		"todosOrder":     opts.TodosOrder,
+		"avatarSize":     opts.AvatarSize,
 	}
 	return variables
 }
@@ -55,7 +60,7 @@ type viewerQuery struct {
 		Username            string
 		Firstname           string `graphql:"first_name"`
 		Lastname            string `graphql:"last_name"`
-		AvatarURL           string `graphql:"avatar_url"`
+		AvatarURL           string `graphql:"avatar_url(w: $avatarSize, h: $avatarSize)"`
 		CompletedTodosCount int    `graphql:"completed_todos_count"`
 		BestStreak          int    `graphql:"best_streak"`
 		Streaking           bool
