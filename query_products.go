@@ -29,24 +29,24 @@ func (c Client) QueryProducts(ctx context.Context, limit int) ([]Product, error)
 
 type productsQuery struct {
 	Products []struct {
-		ID         graphql.ID `graphql:"id"`
-		CreatedAt  time.Time  `graphql:"created_at"`
-		Hashtag    string     `graphql:"hashtag"`
-		Name       string     `graphql:"name"`
-		Pitch      string     `graphql:"pitch"`
-		UpdatedAt  time.Time  `graphql:"updated_at"`
-		URL        string     `graphql:"url"`
-		WebsiteURL string     `graphql:"website_url"`
+		ID         graphql.ID `graphql:"id" json:"id,omitempty"`
+		CreatedAt  time.Time  `graphql:"created_at" json:"created_at,omitempty"`
+		Hashtag    string     `graphql:"hashtag" json:"hashtag,omitempty"`
+		Name       string     `graphql:"name" json:"name,omitempty"`
+		Pitch      string     `graphql:"pitch" json:"pitch,omitempty"`
+		UpdatedAt  time.Time  `graphql:"updated_at" json:"updated_at,omitempty"`
+		URL        string     `graphql:"url" json:"url,omitempty"`
+		WebsiteURL string     `graphql:"website_url" json:"website_url,omitempty"`
 		Makers     []struct {
-			ID                  graphql.ID `graphql:"id"`
-			URL                 string     `graphql:"url"`
-			Username            string     `graphql:"username"`
-			Firstname           string     `graphql:"first_name"`
-			Lastname            string     `graphql:"last_name"`
-			AvatarURL           string     `graphql:"avatar_url"`
-			CompletedTodosCount int        `graphql:"completed_todos_count"`
-			BestStreak          int        `graphql:"best_streak"`
-			Streaking           bool       `graphql:"streaking"`
+			ID                  graphql.ID `graphql:"id" json:"id,omitempty"`
+			URL                 string     `graphql:"url" json:"url,omitempty"`
+			Username            string     `graphql:"username" json:"username,omitempty"`
+			Firstname           string     `graphql:"first_name" json:"first_name,omitempty"`
+			Lastname            string     `graphql:"last_name" json:"last_name,omitempty"`
+			AvatarURL           string     `graphql:"avatar_url" json:"avatar_url,omitempty"`
+			CompletedTodosCount int        `graphql:"completed_todos_count" json:"completed_todos_count,omitempty"`
+			BestStreak          int        `graphql:"best_streak" json:"best_streak,omitempty"`
+			Streaking           bool       `graphql:"streaking" json:"streaking,omitempty"`
 			//Todos               []Todo     `graphql:"todos" json:"todos,omitempty"`
 			//Products            []Product  `graphql:"products" json:"products,omitempty"`
 		} `graphql:"makers" json:"makers,omitempty"`

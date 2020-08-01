@@ -88,17 +88,17 @@ type userIDQuery struct {
 		ID                  graphql.ID
 		URL                 string
 		Username            string
-		Firstname           string `graphql:"first_name"`
-		Lastname            string `graphql:"last_name"`
-		AvatarURL           string `graphql:"avatar_url(w: $avatarSize, h: $avatarSize)"`
-		CompletedTodosCount int    `graphql:"completed_todos_count"`
-		BestStreak          int    `graphql:"best_streak"`
+		Firstname           string `graphql:"first_name" json:"first_name,omitempty"`
+		Lastname            string `graphql:"last_name" json:"last_name,omitempty"`
+		AvatarURL           string `graphql:"avatar_url(w: $avatarSize, h: $avatarSize)" json:"avatar_url"`
+		CompletedTodosCount int    `graphql:"completed_todos_count" json:"completed_todos_count,omitempty"`
+		BestStreak          int    `graphql:"best_streak" json:"best_streak,omitempty"`
 		Streaking           bool
 		Todos               []struct { // type=Todo
 			ID          graphql.ID
-			CreatedAt   *time.Time `graphql:"created_at"`
-			CompletedAt *time.Time `graphql:"completed_at"`
-			UpdatedAt   *time.Time `graphql:"updated_at"`
+			CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
+			CompletedAt *time.Time `graphql:"completed_at" json:"completed_at,omitempty"`
+			UpdatedAt   *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			Body        string
 			Product     *struct { // type=Product
 				ID      graphql.ID
@@ -108,13 +108,13 @@ type userIDQuery struct {
 		} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, offset: $todosOffset, filter: $todosFilter, order: $todosOrder)"`
 		Products []struct { // type=Product
 			ID         graphql.ID
-			CreatedAt  *time.Time `graphql:"created_at"`
+			CreatedAt  *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 			Hashtag    string
 			Name       string
 			Pitch      string
-			UpdatedAt  *time.Time `graphql:"updated_at"`
+			UpdatedAt  *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL        string
-			WebsiteURL string `graphql:"website_url"`
+			WebsiteURL string `graphql:"website_url" json:"website_url,omitempty"`
 			Makers     []struct {
 				ID graphql.ID
 			}
@@ -128,17 +128,17 @@ type usernameQuery struct {
 		ID                  graphql.ID
 		URL                 string
 		Username            string
-		Firstname           string `graphql:"first_name"`
-		Lastname            string `graphql:"last_name"`
-		AvatarURL           string `graphql:"avatar_url(w: $avatarSize, h: $avatarSize)"`
-		CompletedTodosCount int    `graphql:"completed_todos_count"`
-		BestStreak          int    `graphql:"best_streak"`
+		Firstname           string `graphql:"first_name" json:"first_name,omitempty"`
+		Lastname            string `graphql:"last_name" json:"last_name,omitempty"`
+		AvatarURL           string `graphql:"avatar_url(w: $avatarSize, h: $avatarSize)" json:"avatar_url"`
+		CompletedTodosCount int    `graphql:"completed_todos_count" json:"completed_todos_count,omitempty"`
+		BestStreak          int    `graphql:"best_streak" json:"best_streak,omitempty"`
 		Streaking           bool
 		Todos               []struct { // type=Todo
 			ID          graphql.ID
-			CreatedAt   *time.Time `graphql:"created_at"`
-			CompletedAt *time.Time `graphql:"completed_at"`
-			UpdatedAt   *time.Time `graphql:"updated_at"`
+			CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
+			CompletedAt *time.Time `graphql:"completed_at" json:"completed_at,omitempty"`
+			UpdatedAt   *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			Body        string
 			Product     *struct { // type=Product
 				ID      graphql.ID
@@ -148,13 +148,13 @@ type usernameQuery struct {
 		} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, offset: $todosOffset, filter: $todosFilter, order: $todosOrder)"`
 		Products []struct { // type=Product
 			ID         graphql.ID
-			CreatedAt  *time.Time `graphql:"created_at"`
+			CreatedAt  *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 			Hashtag    string
 			Name       string
 			Pitch      string
-			UpdatedAt  *time.Time `graphql:"updated_at"`
+			UpdatedAt  *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL        string
-			WebsiteURL string `graphql:"website_url"`
+			WebsiteURL string `graphql:"website_url" json:"website_url,omitempty"`
 			Makers     []struct {
 				ID graphql.ID
 			}
