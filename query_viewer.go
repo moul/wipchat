@@ -11,9 +11,9 @@ func (c Client) QueryViewer(ctx context.Context, opts *QueryViewerOptions) (*Use
 	if !c.hasKey {
 		return nil, ErrTokenRequired
 	}
-
 	if opts == nil {
 		opts = &QueryViewerOptions{}
+		opts.ApplyDefaults()
 	}
 	var query viewerQuery
 	err := c.graphql.Query(ctx, &query, opts.toMap())
@@ -27,28 +27,32 @@ func (c Client) QueryViewer(ctx context.Context, opts *QueryViewerOptions) (*Use
 }
 
 type QueryViewerOptions struct {
-	TodosCompleted graphql.Boolean
-	TodosLimit     graphql.Int
-	TodosOffset    graphql.Int
-	TodosFilter    graphql.String
-	TodosOrder     graphql.String
-	AvatarSize     graphql.Int
+	TodosCompleted bool
+	TodosLimit     int
+	TodosOffset    int
+	TodosFilter    string
+	TodosOrder     string
+	AvatarSize     int
 }
 
-func (opts *QueryViewerOptions) toMap() map[string]interface{} {
+func (opts *QueryViewerOptions) ApplyDefaults() {
+	opts.TodosCompleted = true
 	if opts.TodosLimit == 0 {
 		opts.TodosLimit = 20
 	}
 	if opts.AvatarSize == 0 {
 		opts.AvatarSize = 64
 	}
+}
+
+func (opts *QueryViewerOptions) toMap() map[string]interface{} {
 	variables := map[string]interface{}{
-		"todosCompleted": opts.TodosCompleted,
-		"todosLimit":     opts.TodosLimit,
-		"todosOffset":    opts.TodosOffset,
-		"todosFilter":    opts.TodosFilter,
-		"todosOrder":     opts.TodosOrder,
-		"avatarSize":     opts.AvatarSize,
+		"todosCompleted": graphql.Boolean(opts.TodosCompleted),
+		"todosLimit":     graphql.Int(opts.TodosLimit),
+		"todosOffset":    graphql.Int(opts.TodosOffset),
+		"todosFilter":    graphql.String(opts.TodosFilter),
+		"todosOrder":     graphql.String(opts.TodosOrder),
+		"avatarSize":     graphql.Int(opts.AvatarSize),
 	}
 	return variables
 }
