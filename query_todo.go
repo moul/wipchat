@@ -61,7 +61,9 @@ type todosQuery struct {
 			UpdatedAt  *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL        string
 			WebsiteURL string `graphql:"website_url"`
-			// Makers  []User
+			Makers     []struct {
+				ID graphql.ID
+			}
 			// Todos   []Todo
 		} `json:"product,omitempty"`
 		UpdatedAt time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
