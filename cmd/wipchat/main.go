@@ -40,6 +40,7 @@ func run(_ []string) error {
 			doneCommand(),
 			todosCommand(),
 			productsCommand(),
+			userCommand(),
 		},
 		Exec: func(_ context.Context, _ []string) error {
 			fmt.Fprintln(os.Stderr, motd.Default())
