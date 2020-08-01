@@ -7,12 +7,17 @@ import (
 	"github.com/shurcooL/graphql"
 )
 
-func (c Client) QueryTodos(ctx context.Context) ([]Todo, error) {
+func (c Client) QueryTodos(ctx context.Context, opts *QueryTodosOptions) ([]Todo, error) {
 	if !c.hasKey {
 		return nil, ErrTokenRequired
 	}
+	if opts == nil {
+		opts = &QueryTodosOptions{}
+		opts.ApplyDefaults()
+	}
+
 	var query todosQuery
-	err := c.graphql.Query(ctx, &query, nil)
+	err := c.graphql.Query(ctx, &query, opts.toMap())
 	if err != nil {
 		return nil, err
 	}
@@ -22,22 +27,44 @@ func (c Client) QueryTodos(ctx context.Context) ([]Todo, error) {
 	return ret, err
 }
 
+type QueryTodosOptions struct {
+	TodosCompleted bool
+	TodosLimit     int
+	TodosFilter    string
+}
+
+func (opts *QueryTodosOptions) ApplyDefaults() {
+	opts.TodosCompleted = true
+	if opts.TodosLimit == 0 {
+		opts.TodosLimit = 20
+	}
+}
+
+func (opts *QueryTodosOptions) toMap() map[string]interface{} {
+	variables := map[string]interface{}{
+		"todosCompleted": graphql.Boolean(opts.TodosCompleted),
+		"todosLimit":     graphql.Int(opts.TodosLimit),
+		"todosFilter":    graphql.String(opts.TodosFilter),
+	}
+	return variables
+}
+
 type todosQuery struct {
 	Todos []struct {
 		ID      graphql.ID
 		Product struct {
 			ID         graphql.ID
-			CreatedAt  time.Time `graphql:"created_at"`
+			CreatedAt  *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 			Hashtag    string
 			Name       string
 			Pitch      string
-			UpdatedAt  time.Time `graphql:"updated_at"`
+			UpdatedAt  *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL        string
 			WebsiteURL string `graphql:"website_url"`
 			// Makers  []User
 			// Todos   []Todo
-		}
-		UpdatedAt time.Time `graphql:"updated_at"`
+		} `json:"omitempty"`
+		UpdatedAt time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 		User      struct {
 			ID                  graphql.ID
 			URL                 string
@@ -51,18 +78,18 @@ type todosQuery struct {
 			//Products []Product
 			//Todos []Todo
 		}
-		CreatedAt   time.Time `graphql:"created_at"`
-		CompletedAt time.Time `graphql:"completed_at"`
+		CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
+		CompletedAt *time.Time `graphql:"completed_at" json:"completed_at,omitempty"`
 		Body        string
 		Attachments []struct {
 			ID        graphql.ID
-			CreatedAt time.Time `graphql:"created_at"`
+			CreatedAt *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 			Filename  string
 			MimeType  string `graphql:"mime_type"`
 			Size      int
-			UpdatedAt time.Time `graphql:"updated_at"`
+			UpdatedAt *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL       string
 			//AspectRatio float64   `graphql:"aspect_ratio"` // buggy
 		}
-	}
+	} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, filter: $todosFilter)"`
 }

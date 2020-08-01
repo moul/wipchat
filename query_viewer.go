@@ -70,9 +70,9 @@ type viewerQuery struct {
 		Streaking           bool
 		Todos               []struct { // type=Todo
 			ID          graphql.ID
-			CreatedAt   time.Time `graphql:"created_at"`
-			CompletedAt time.Time `graphql:"completed_at"`
-			UpdatedAt   time.Time `graphql:"updated_at"`
+			CreatedAt   *time.Time `graphql:"created_at"`
+			CompletedAt *time.Time `graphql:"completed_at"`
+			UpdatedAt   *time.Time `graphql:"updated_at"`
 			Body        string
 			Product     *struct { // type=Product
 				ID      graphql.ID
@@ -82,14 +82,16 @@ type viewerQuery struct {
 		} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, offset: $todosOffset, filter: $todosFilter, order: $todosOrder)"`
 		Products []struct { // type=Product
 			ID         graphql.ID
-			CreatedAt  time.Time `graphql:"created_at"`
+			CreatedAt  *time.Time `graphql:"created_at"`
 			Hashtag    string
 			Name       string
 			Pitch      string
-			UpdatedAt  time.Time `graphql:"updated_at"`
+			UpdatedAt  *time.Time `graphql:"updated_at"`
 			URL        string
 			WebsiteURL string `graphql:"website_url"`
-			// Makers  []User
+			Makers     []struct {
+				ID graphql.ID
+			}
 			// Todos   []Todo
 		}
 	}

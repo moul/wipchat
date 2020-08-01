@@ -17,7 +17,7 @@ func meCommand() *ffcli.Command {
 	flags.BoolVar(&opts.TodosCompleted, "todos-completed", opts.TodosCompleted, "todos completed")
 	flags.IntVar(&opts.TodosLimit, "todos-limit", opts.TodosLimit, "todos limit")
 	flags.IntVar(&opts.TodosOffset, "todos-offset", opts.TodosOffset, "todos offset")
-	flags.StringVar(&opts.TodosFilter, "todos-filter", opts.TodosFilter, "todos")
+	flags.StringVar(&opts.TodosFilter, "todos-filter", opts.TodosFilter, "todos filter")
 	flags.StringVar(&opts.TodosOrder, "todos-order", opts.TodosOrder, "todos order")
 	flags.IntVar(&opts.AvatarSize, "avatar-size", opts.AvatarSize, "avatar size")
 

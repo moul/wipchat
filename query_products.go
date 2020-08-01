@@ -7,12 +7,17 @@ import (
 	"github.com/shurcooL/graphql"
 )
 
-func (c Client) QueryProducts(ctx context.Context) ([]Product, error) {
+func (c Client) QueryProducts(ctx context.Context, limit int) ([]Product, error) {
 	if !c.hasKey {
 		return nil, ErrTokenRequired
 	}
+	if limit == 0 {
+		limit = 20
+	}
 	var query productsQuery
-	err := c.graphql.Query(ctx, &query, nil)
+	err := c.graphql.Query(ctx, &query, map[string]interface{}{
+		"limit": graphql.Int(limit),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -45,5 +50,5 @@ type productsQuery struct {
 			//Todos               []Todo     `graphql:"todos" json:"todos,omitempty"`
 			//Products            []Product  `graphql:"products" json:"products,omitempty"`
 		} `graphql:"makers" json:"makers,omitempty"`
-	}
+	} `graphql:"products(limit: $limit)"`
 }
