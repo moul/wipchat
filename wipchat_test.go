@@ -12,7 +12,7 @@ func TestClientUnauthenticated(t *testing.T) {
 	ctx := context.Background()
 
 	{
-		ret, err := client.QueryViewer(ctx)
+		ret, err := client.QueryViewer(ctx, nil)
 		require.Nil(t, ret)
 		require.Equal(t, err, ErrTokenRequired)
 	}
@@ -24,7 +24,7 @@ func TestClientUnauthenticated(t *testing.T) {
 	}
 
 	{
-		ret, err := client.uploadAttachment(ctx, Attachment{})
+		ret, err := client.uploadAttachment(ctx, FilePayload{})
 		require.Nil(t, ret)
 		require.Equal(t, err, ErrTokenRequired)
 	}
