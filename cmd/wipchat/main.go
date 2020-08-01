@@ -18,7 +18,6 @@ import (
 	"moul.io/godev"
 	"moul.io/motd"
 	"moul.io/wipchat"
-	"moul.io/wipchat/wiptypes"
 )
 
 func main() {
@@ -63,7 +62,7 @@ func run(_ []string) error {
 				FlagSet:   meFlags,
 				Exec: func(ctx context.Context, _ []string) error {
 					client := wipchat.New(apiKey)
-					viewer, err := client.QueryViewer(ctx, &wiptypes.QueryViewerOptions{
+					viewer, err := client.QueryViewer(ctx, &wipchat.QueryViewerOptions{
 						TodosCompleted: graphql.Boolean(todosCompletedFilter),
 						TodosLimit:     graphql.Int(todosLimitFilter),
 						TodosOffset:    graphql.Int(todosOffsetFilter),
@@ -99,7 +98,7 @@ func run(_ []string) error {
 					if debug {
 						fmt.Fprintln(os.Stderr, godev.PrettyJSON(task))
 					}
-					fmt.Printf("%s/todos/%s\n", task.CreateTodo.User.URL, task.CreateTodo.ID)
+					fmt.Println(task.CanonicalURL())
 					return nil
 				},
 			}, {
@@ -126,7 +125,7 @@ func run(_ []string) error {
 					if debug {
 						fmt.Fprintln(os.Stderr, godev.PrettyJSON(task))
 					}
-					fmt.Printf("%s/todos/%s\n", task.CreateTodo.User.URL, task.CreateTodo.ID)
+					fmt.Println(task.CanonicalURL())
 					return nil
 				},
 			}, {
@@ -164,9 +163,9 @@ func run(_ []string) error {
 	return root.ParseAndRun(context.Background(), os.Args[1:])
 }
 
-func loadAttachPaths(paths []string) ([]wipchat.Attachment, error) {
+func loadAttachPaths(paths []string) ([]wipchat.FilePayload, error) {
 	// FIXME: support URL
-	ret := make([]wipchat.Attachment, len(paths))
+	ret := make([]wipchat.FilePayload, len(paths))
 	for i, p := range paths {
 		f, err := os.Open(p)
 		if err != nil {
@@ -184,7 +183,7 @@ func loadAttachPaths(paths []string) ([]wipchat.Attachment, error) {
 		if !strings.HasPrefix(contentType, "image/") {
 			return nil, fmt.Errorf("invalid content-type %q: %q", p, contentType)
 		}
-		ret[i] = wipchat.Attachment{
+		ret[i] = wipchat.FilePayload{
 			Filename: path.Base(p),
 			Bytes:    b,
 		}

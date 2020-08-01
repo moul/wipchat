@@ -1,6 +1,7 @@
-package wiptypes
+package wipchat
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/shurcooL/graphql"
@@ -53,4 +54,11 @@ type User struct {
 	Streaking           bool       `graphql:"streaking"`
 	Todos               []Todo     `graphql:"todos" json:"todos,omitempty"`
 	Products            []Product  `graphql:"products" json:"products,omitempty"`
+}
+
+func (t *Todo) CanonicalURL() string {
+	if t.User != nil {
+		return fmt.Sprintf("%s/todos/%s", t.User.URL, t.ID)
+	}
+	return fmt.Sprintf("https://wip.chat/@makerlog/todos/%s", t.ID)
 }
