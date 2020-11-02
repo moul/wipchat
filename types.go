@@ -9,12 +9,12 @@ import (
 
 type Attachment struct {
 	ID          graphql.ID `graphql:"id" json:"id,omitempty"`
-	AspectRatio float64    `graphql:"aspect_ratio" json:"aspect_ratio,omitempty"`
-	CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
+	AspectRatio float64    `graphql:"aspectRatio" json:"aspect_ratio,omitempty"`
+	CreatedAt   *time.Time `graphql:"createdAt" json:"created_at,omitempty"`
 	Filename    string     `graphql:"filename" json:"filename,omitempty"`
-	MimeType    string     `graphql:"mime_type" json:"mime_type,omitempty"`
+	MimeType    string     `graphql:"mimeType" json:"mime_type,omitempty"`
 	Size        int        `graphql:"size" json:"size,omitempty"`
-	UpdatedAt   *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
+	UpdatedAt   *time.Time `graphql:"updatedAt" json:"updated_at,omitempty"`
 	URL         string     `graphql:"url" json:"url,omitempty"`
 }
 
