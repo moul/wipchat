@@ -77,8 +77,8 @@ type todosQuery struct {
 			CompletedTodosCount int    `graphql:"completed_todos_count"`
 			BestStreak          int    `graphql:"best_streak"`
 			Streaking           bool
-			//Products []Product
-			//Todos []Todo
+			// Products []Product
+			// Todos []Todo
 		}
 		CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 		CompletedAt *time.Time `graphql:"completed_at" json:"completed_at,omitempty"`
@@ -91,7 +91,7 @@ type todosQuery struct {
 			Size      int
 			UpdatedAt *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
 			URL       string
-			//AspectRatio float64   `graphql:"aspect_ratio"` // buggy
+			// AspectRatio float64   `graphql:"aspect_ratio"` // buggy
 		}
 	} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, filter: $todosFilter)"`
 }
