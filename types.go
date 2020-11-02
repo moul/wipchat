@@ -33,7 +33,7 @@ func (t *Todo) CanonicalURL() string {
 	if t.User != nil {
 		return fmt.Sprintf("%s/todos/%s", t.User.URL, t.ID)
 	}
-	return fmt.Sprintf("https://wip.chat/@makerlog/todos/%s", t.ID)
+	return fmt.Sprintf("https://wip.co/@author/todos/%s", t.ID)
 }
 
 type Product struct {

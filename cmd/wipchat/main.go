@@ -26,7 +26,7 @@ var (
 
 func run(_ []string) error {
 	flags := flag.NewFlagSet("root", flag.ExitOnError)
-	flags.StringVar(&apiKey, "key", "", "Your private API key from https://wip.chat/api")
+	flags.StringVar(&apiKey, "key", "", "Your private API key from https://wip.co/api")
 	flags.BoolVar(&debug, "debug", false, "More verbose output")
 
 	root := &ffcli.Command{

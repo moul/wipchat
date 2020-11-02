@@ -30,7 +30,7 @@ $ wipchat todo 👋 hello world
     "Body": "👋 hello world",
     "User": {
       "ID": "1780",
-      "URL": "https://wip.chat/@moul"
+      "URL": "https://wip.co/@moul"
     }
   }
 }
@@ -48,11 +48,11 @@ $ wipchat done "👋 hello world #oss"wipchat
     "Product": {
       "ID": "3493",
       "Hashtag": "oss",
-      "URL": "https://wip.chat/products/oss"
+      "URL": "https://wip.co/products/oss"
     },
     "User": {
       "ID": "1780",
-      "URL": "https://wip.chat/@moul"
+      "URL": "https://wip.co/@moul"
     }
   }
 }
@@ -63,7 +63,7 @@ $ wipchat me  | jq . | head -11
 {
   "Viewer": {
     "ID": "1780",
-    "URL": "https://wip.chat/@moul",
+    "URL": "https://wip.co/@moul",
     "Username": "moul",
     "Firstname": "Manfred",
     "Lastname": "Touron 🇫🇷",

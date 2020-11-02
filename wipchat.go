@@ -20,6 +20,6 @@ func New(apikey string) Client {
 		client.hasKey = true
 	}
 	httpClient := http.Client{Transport: &transport}
-	client.graphql = graphql.NewClient("https://wip.chat/graphql", &httpClient)
+	client.graphql = graphql.NewClient("https://wip.co/graphql", &httpClient)
 	return client
 }
