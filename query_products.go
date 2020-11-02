@@ -47,8 +47,8 @@ type productsQuery struct {
 			CompletedTodosCount int        `graphql:"completed_todos_count" json:"completed_todos_count,omitempty"`
 			BestStreak          int        `graphql:"best_streak" json:"best_streak,omitempty"`
 			Streaking           bool       `graphql:"streaking" json:"streaking,omitempty"`
-			//Todos               []Todo     `graphql:"todos" json:"todos,omitempty"`
-			//Products            []Product  `graphql:"products" json:"products,omitempty"`
+			// Todos               []Todo     `graphql:"todos" json:"todos,omitempty"`
+			// Products            []Product  `graphql:"products" json:"products,omitempty"`
 		} `graphql:"makers" json:"makers,omitempty"`
 	} `graphql:"products(limit: $limit)"`
 }

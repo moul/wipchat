@@ -77,21 +77,21 @@ type todosQuery struct {
 			CompletedTodosCount int    `graphql:"completed_todos_count"`
 			BestStreak          int    `graphql:"best_streak"`
 			Streaking           bool
-			//Products []Product
-			//Todos []Todo
+			// Products []Product
+			// Todos []Todo
 		}
 		CreatedAt   *time.Time `graphql:"created_at" json:"created_at,omitempty"`
 		CompletedAt *time.Time `graphql:"completed_at" json:"completed_at,omitempty"`
 		Body        string
 		Attachments []struct {
 			ID        graphql.ID
-			CreatedAt *time.Time `graphql:"created_at" json:"created_at,omitempty"`
+			CreatedAt *time.Time `graphql:"createdAt" json:"created_at,omitempty"`
 			Filename  string
-			MimeType  string `graphql:"mime_type"`
+			MimeType  string `graphql:"mimeType"`
 			Size      int
-			UpdatedAt *time.Time `graphql:"updated_at" json:"updated_at,omitempty"`
+			UpdatedAt *time.Time `graphql:"updatedAt" json:"updated_at,omitempty"`
 			URL       string
-			//AspectRatio float64   `graphql:"aspect_ratio"` // buggy
+			// AspectRatio float64 `graphql:"aspectRatio"` // buggy
 		}
 	} `graphql:"todos(limit: $todosLimit, completed: $todosCompleted, filter: $todosFilter)"`
 }
